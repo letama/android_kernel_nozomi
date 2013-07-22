@@ -3181,6 +3181,7 @@ static struct notifier_block vreg_poweroff_notifier = {
 	.notifier_call = shared_vreg_exit,
 };
 
+#ifdef CONFIG_INPUT_BMA250
 static int bma250_gpio_setup(struct device *dev)
 {
 	return 0;
@@ -3218,6 +3219,7 @@ static struct bma250_platform_data bma250_platform_data = {
 	.vote_sleep_status    = vote_bma250_sleep_state,
 	.rate                 = BMA250_DEFAULT_RATE,
 };
+#endif
 
 #define APDS9702_DOUT_GPIO   34
 
@@ -3259,6 +3261,7 @@ static struct apds9702_platform_data apds9702_pdata = {
 	.phys_dev_path = "/sys/devices/i2c-3/3-0054"
 };
 
+#if defined(CONFIG_INPUT_AKM8975) || defined(CONFIG_INPUT_AKM8972)
 static int akm897x_gpio_setup(void)
 {
 	int rc;
@@ -3283,6 +3286,7 @@ static void akm897x_power_mode(int enable)
 {
 	return;
 }
+#endif
 
 #ifdef CONFIG_INPUT_AKM8975
 static struct akm8975_platform_data akm8975_platform_data = {
@@ -3376,12 +3380,15 @@ static struct i2c_board_info fuji_gsbi8_peripherals_info[] __initdata = {
 };
 #endif
 
+#if defined(CONFIG_INPUT_BMA250) || defined(CONFIG_INPUT_AKM8975) || defined(CONFIG_SENSORS_MPU3050)
 static struct i2c_board_info fuji_gsbi12_peripherals_info[] __initdata = {
+#ifdef CONFIG_INPUT_BMA250
 	{
 		I2C_BOARD_INFO("bma250", 0x30 >> 1),
 		.irq = MSM_GPIO_TO_INT(BMA250_GPIO),
 		.platform_data = &bma250_platform_data,
 	},
+#endif
 	{
 #ifdef CONFIG_INPUT_AKM8975
 		I2C_BOARD_INFO(AKM8975_I2C_NAME, 0x18 >> 1),
@@ -3402,7 +3409,7 @@ static struct i2c_board_info fuji_gsbi12_peripherals_info[] __initdata = {
 	},
 #endif
 };
-
+#endif
 
 #ifdef CONFIG_MSM_GSBI5_UART
 static struct msm_serial_hslite_platform_data msm_uart_gsbi5_pdata = {
@@ -5748,13 +5755,15 @@ static struct i2c_registry msm8x60_i2c_devices[] __initdata = {
 		MSM_GSBI8_QUP_I2C_BUS_ID,
 		fuji_gsbi8_peripherals_info,
 		ARRAY_SIZE(fuji_gsbi8_peripherals_info)
-	},
+        },
+#if defined(CONFIG_INPUT_BMA250) || defined(CONFIG_INPUT_AKM8975) || defined(CONFIG_SENSORS_MPU3050)
 	{
 		0,
 		MSM_GSBI12_QUP_I2C_BUS_ID,
 		fuji_gsbi12_peripherals_info,
 		ARRAY_SIZE(fuji_gsbi12_peripherals_info)
 	},
+#endif
 #endif
 };
 #endif /* CONFIG_I2C */
