@@ -3963,6 +3963,27 @@ static struct platform_device ram_console_device = {
 };
 #endif
 
+#ifdef CONFIG_BOOTSEL
+#define MSM_BOOTSEL_START   (0x7FFE0000 - MSM_BOOTSEL_SIZE)
+#define MSM_BOOTSEL_SIZE    (4 * SZ_1K)
+
+static struct resource bootsel_resources[] = {
+       [0] = {
+               .start  = MSM_BOOTSEL_START,
+               .end    = MSM_BOOTSEL_START + MSM_BOOTSEL_SIZE - 1,
+               .flags  = IORESOURCE_MEM,
+       },
+};
+
+static struct platform_device bootsel_device = {
+       .name           = "bootsel",
+       .id             = -1,
+       .num_resources  = ARRAY_SIZE(bootsel_resources),
+       .resource       = bootsel_resources,
+};
+
+#endif
+
 #ifdef CONFIG_RAMDUMP_CRASH_LOGS
 #define MSM_RAMDUMP_INFO_START	0x7FF00000
 #define MSM_RAMDUMP_INFO_SIZE	(4 * SZ_1K)
@@ -4238,6 +4259,9 @@ static struct platform_device *fuji_devices[] __initdata = {
 #endif
 #ifdef CONFIG_ANDROID_RAM_CONSOLE
 	&ram_console_device,
+#endif
+#ifdef CONFIG_BOOTSEL
+        &bootsel_device,
 #endif
 #ifdef CONFIG_RAMDUMP_CRASH_LOGS
 	&ramdumplog_device,

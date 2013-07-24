@@ -25,6 +25,10 @@ config ANDROID_LOGGER
 	tristate "Android log driver"
 	default n
 
+config BOOTSEL
+        bool "LeTama bootsel driver"
+	default n
+
 config ANDROID_PERSISTENT_RAM
 	bool
 	depends on HAVE_MEMBLOCK
