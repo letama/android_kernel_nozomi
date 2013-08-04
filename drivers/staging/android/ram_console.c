@@ -69,8 +69,6 @@ static int __devinit ram_console_probe(struct platform_device *pdev)
 	ram_console_zone = prz;
 	ram_console.data = prz;
 
-	register_console(&ram_console);
-
 	return 0;
 }
 
